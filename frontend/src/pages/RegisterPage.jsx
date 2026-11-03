@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+﻿import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { User, Mail, Lock, Phone, Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -168,7 +168,7 @@ export default function RegisterPage() {
           <div className="mt-8 pt-6 border-t border-slate-100 text-center">
             <p className="text-sm text-slate-500">
               Already have an account?{' '}
-              <Link to="/login" className="font-semibold text-[#0f766e] hover:underline">
+              <Link to="/login" className="font-semibold text-[#6d28d9] hover:underline">
                 Sign In
               </Link>
             </p>

@@ -1,18 +1,18 @@
-# 🚆 The One Rail
+# 🚆 PayanamX
 
 ### A Smart Train Reservation Demonstration System
 
-The One Rail is a full-stack MERN application that demonstrates a modern train reservation experience. Users can search trains, explore class-specific coach layouts, select their preferred seats and berths, book tickets, and manage reservations through an intuitive interface.
+PayanamX is a full-stack MERN application that demonstrates a modern train reservation experience. Users can search trains, explore class-specific coach layouts, select their preferred seats and berths, book tickets, and manage reservations through an intuitive interface.
 
-> **Project Notice:** This is a demonstration application. Train availability, fares, seat inventory, payments, PNRs and tickets are simulated. Generated tickets are not valid for railway travel and the application is not connected to official IRCTC booking systems.
+> **Project Notice:** Train timetables and running status are requested from the configured RailRadar API. Train availability, fares, seat inventory, payments, PNRs and tickets remain simulated. Generated tickets are not valid for railway travel and the application is not connected to official IRCTC booking systems.
 
 ---
 
 ## 📌 About the Project
 
-The One Rail aims to make the train reservation process more interactive by giving passengers control over their coach and exact seat selection.
+PayanamX aims to make the train reservation process more interactive by giving passengers control over their coach and exact seat selection.
 
-Unlike basic booking demonstrations that automatically allocate seats, The One Rail allows passengers to visually explore coach layouts and select available seats for each traveller.
+Unlike basic booking demonstrations that automatically allocate seats, PayanamX allows passengers to visually explore coach layouts and select available seats for each traveller.
 
 The application also provides administrative tools to manage train information, stations, bookings, users and reservation statistics.
 
@@ -151,11 +151,11 @@ Install the following:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/BhuvaneshP63/the-one-rail.git
+git clone https://github.com/BhuvaneshP63/payanamx.git
 ```
 
 ```bash
-cd the-one-rail
+cd payanamx
 ```
 
 ### 2. Backend Setup
@@ -250,7 +250,7 @@ This script adds missing sample stations, trains and routes while preserving exi
 
 ### Train Data Integration
 
-The application uses sample train data by default and supports an optional RailRadar timetable provider.
+The application uses RailRadar for train search, timetable details and live running status by default. Add a valid API key to the backend environment. If the API key is missing or the provider cannot be reached, the app returns an error instead of showing sample trains.
 
 External timetable information is kept separate from locally managed coach inventory, seat availability, fares and reservations.
 
@@ -261,7 +261,7 @@ TRAIN_DATA_PROVIDER=railradar
 RAILRADAR_API_KEY=your_api_key
 ```
 
-Provider access, API coverage and credentials must be verified separately.
+RailRadar API reference: [trains between stations](https://railradar.in/docs/trains-between-stations) and [live running status](https://railradar.in/docs/live-train-status). Provider access, API coverage and credentials must be verified separately. Real-time tracking refreshes every 30 seconds while the tracker page is open.
 
 ---
 
@@ -293,7 +293,7 @@ The booking lifecycle smoke test was performed against a dedicated test database
 
 ## ⚠️ Limitations
 
-- Train schedules use sample data by default; optional external timetable integration requires authorized provider access.
+- Live train search and running status require a configured RailRadar API key and provider availability.
 - Seat availability and coach inventory are simulated.
 - Fare calculations are project estimates, not official railway fares.
 - Payment processing is simulated.
@@ -317,11 +317,11 @@ The booking lifecycle smoke test was performed against a dedicated test database
 
 ## 👨‍💻 Project Information
 
-**Project Name:** The One Rail  
+**Project Name:** PayanamX  
 **Project Type:** Full-Stack Web Application  
 **Domain:** Railway Reservation System  
 **Technology:** MERN Stack  
-**Repository:** [GitHub – The One Rail](https://github.com/BhuvaneshP63/the-one-rail)
+**Repository:** [GitHub – PayanamX](https://github.com/BhuvaneshP63/payanamx)
 
 ---
 
@@ -331,4 +331,4 @@ This project is developed for educational and demonstration purposes. Add a lice
 
 ---
 
-**The One Rail – Making Train Reservations More Interactive! 🚆**
+**PayanamX – Making Train Reservations More Interactive! 🚆**

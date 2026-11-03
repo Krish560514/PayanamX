@@ -64,8 +64,10 @@ const definitions = [
 ];
 
 async function main() {
-  if (!process.env.MONGODB_URI) throw new Error('Set MONGODB_URI in backend/.env before adding sample trains.');
-  await mongoose.connect(process.env.MONGODB_URI);
+  if (mongoose.connection.readyState !== 1) {
+    if (!process.env.MONGODB_URI) throw new Error('Set MONGODB_URI in backend/.env before adding sample trains.');
+    await mongoose.connect(process.env.MONGODB_URI);
+  }
   const ids = {};
   for (const station of stations) {
     const result = await Station.findOneAndUpdate({ code: station.code }, { $setOnInsert: station }, { upsert: true, new: true });

@@ -2,10 +2,10 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { getTrainDataProvider } = require('../src/services/trainDataProvider');
 
-test('sample timetable provider is the default source', () => {
+test('RailRadar timetable provider is the default source', () => {
   const prior = process.env.TRAIN_DATA_PROVIDER;
   delete process.env.TRAIN_DATA_PROVIDER;
-  try { assert.equal(getTrainDataProvider().sourceLabel, 'Sample timetable data (unverified)'); }
+  try { assert.match(getTrainDataProvider().sourceLabel, /RailRadar/); }
   finally { if (prior !== undefined) process.env.TRAIN_DATA_PROVIDER = prior; }
 });
 

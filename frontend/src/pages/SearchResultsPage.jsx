@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+﻿import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { BookingContext } from '../context/BookingContext';
@@ -136,7 +136,7 @@ export default function SearchResultsPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Widget */}
-        <div className="bg-[#103f3b] rounded-2xl shadow-lg p-6 mb-8 text-white flex flex-col md:flex-row md:items-center justify-between">
+        <div className="bg-[#4c1d95] rounded-2xl shadow-lg p-6 mb-8 text-white flex flex-col md:flex-row md:items-center justify-between">
           <div className="flex items-center space-x-4 mb-4 md:mb-0">
             <button onClick={() => navigate('/')} className="p-2 bg-slate-700 hover:bg-slate-600 rounded-full transition">
               <ArrowLeft className="h-5 w-5" />
@@ -180,7 +180,7 @@ export default function SearchResultsPage() {
             <aside className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:sticky lg:top-24">
               <div className="mb-5 flex items-start justify-between">
                 <div><h2 className="font-heading text-lg font-bold text-slate-800">Refine journey</h2><p className="mt-1 text-xs text-slate-500">Narrow down your options</p></div>
-                <button type="button" onClick={() => { setClassFilter('All'); setDepartureFilter('Any'); setArrivalFilter('Any'); setMinFare(''); setMaxFare(''); setMinDuration(''); setMaxDuration(''); setTrainTypeFilter('All'); setSortBy('departure'); }} className="text-xs font-semibold text-teal-700 hover:underline">Reset</button>
+                <button type="button" onClick={() => { setClassFilter('All'); setDepartureFilter('Any'); setArrivalFilter('Any'); setMinFare(''); setMaxFare(''); setMinDuration(''); setMaxDuration(''); setTrainTypeFilter('All'); setSortBy('departure'); }} className="text-xs font-semibold text-violet-700 hover:underline">Reset</button>
               </div>
               <div className="space-y-4">
                 <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500">Travel class<select className="form-input mt-1.5" value={classFilter} onChange={e => setClassFilter(e.target.value)}><option>All</option>{[...new Set(trains.flatMap(t => t.classes))].map(cls => <option key={cls}>{cls}</option>)}</select></label>
@@ -198,7 +198,7 @@ export default function SearchResultsPage() {
                 <label className="flex items-center gap-2 text-xs font-medium text-slate-500">Sort by<select aria-label="Sort trains" className="form-input min-h-0 w-auto py-2 text-sm" value={sortBy} onChange={e => setSortBy(e.target.value)}><option value="departure">Departure</option><option value="arrival">Arrival</option><option value="duration">Journey duration</option><option value="fare">Lowest fare</option></select></label>
               </div>
               {favoriteError && <p role="status" className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-900">{favoriteError}</p>}
-              {visibleTrains.length === 0 && <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-600"><p>No trains match these filters.</p><button type="button" onClick={() => { setClassFilter('All'); setDepartureFilter('Any'); setArrivalFilter('Any'); setMinFare(''); setMaxFare(''); setTrainTypeFilter('All'); }} className="mt-3 font-semibold text-teal-800 underline">Clear filters</button></div>}
+              {visibleTrains.length === 0 && <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-600"><p>No trains match these filters.</p><button type="button" onClick={() => { setClassFilter('All'); setDepartureFilter('Any'); setArrivalFilter('Any'); setMinFare(''); setMaxFare(''); setTrainTypeFilter('All'); }} className="mt-3 font-semibold text-violet-800 underline">Clear filters</button></div>}
               {visibleTrains.map(train => (
                 <TrainCard key={train.trainId} train={train} onBook={handleBookNow} searchClass={searchParams.seatClass} favourite={favouriteIds.includes(train.trainId)} onFavourite={toggleFavourite} />
               ))}
@@ -280,7 +280,7 @@ function TrainCard({ train, onBook, searchClass, favourite, onFavourite }) {
             <button type="button" title={favourite ? 'Remove from favourites' : 'Add to favourites'} onClick={() => onFavourite(train.trainId)} className="p-1 text-rose-600"><Heart className={`h-4 w-4 ${favourite ? 'fill-current' : ''}`} /></button>
           </div>
           <div className="flex items-center space-x-3 text-sm text-slate-500">
-            <div className="flex items-center space-x-1 text-emerald-600">
+            <div className="flex items-center space-x-1 text-violet-600">
               <Star className="h-4 w-4 fill-current" />
               <span className="font-medium">{train.rating}</span>
               <span className="text-slate-400">({train.reviewsCount})</span>
@@ -326,8 +326,8 @@ function TrainCard({ train, onBook, searchClass, favourite, onFavourite }) {
           
           const isAvail = details.availableSeats > 0;
           const statusText = isAvail ? `${details.availableSeats} sample seats` : 'SAMPLE INVENTORY FULL';
-          const statusColor = isAvail ? 'text-emerald-600' : 'text-orange-500';
-          const bgColor = cls === searchClass ? 'bg-teal-50 border-teal-200 ring-1 ring-teal-200' : 'bg-white border-slate-200 hover:border-[#0f766e]';
+          const statusColor = isAvail ? 'text-violet-600' : 'text-orange-500';
+          const bgColor = cls === searchClass ? 'bg-violet-50 border-violet-200 ring-1 ring-violet-200' : 'bg-white border-slate-200 hover:border-[#6d28d9]';
 
           return (
             <div 
@@ -345,10 +345,10 @@ function TrainCard({ train, onBook, searchClass, favourite, onFavourite }) {
             </div>
           );
         })}
-      </div> : <div className="p-4 bg-blue-50 text-sm text-blue-900">External timetable result · {train.trainType || 'Train'}{train.distanceKm ? ` · ${train.distanceKm} km` : ''}{train.totalHalts ? ` · ${train.totalHalts} stops` : ''}. Class, fare and seat availability are not included by this data source, so local demo booking is disabled.</div>}
+      </div> : <div className="p-4 bg-blue-50 text-sm text-blue-900">Railway timetable · {train.trainType || 'Train'}{train.distanceKm ? ` · ${train.distanceKm} km` : ''}{train.totalHalts ? ` · ${train.totalHalts} stops` : ''}. Class, fare and seat availability are not included by this data source, so booking is disabled.{train.liveStatus && <span className="block mt-1">Live status: {train.liveStatus.type || 'Status unavailable'}{train.liveStatus.delayMinutes != null ? ` · ${train.liveStatus.delayMinutes} min delay` : ''}</span>}</div>}
 
       <div className="border-t border-slate-100">
-        <button type="button" onClick={toggleSchedule} aria-expanded={showSchedule} className="w-full px-5 py-3 flex items-center justify-between text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#0f766e]">
+        <button type="button" onClick={toggleSchedule} aria-expanded={showSchedule} className="w-full px-5 py-3 flex items-center justify-between text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#6d28d9]">
           <span>View full schedule <span className="ml-2 text-xs font-normal text-slate-500">{train.dataSource === 'railradar' ? 'external timetable' : 'sample timetable'}</span></span>
           {showSchedule ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </button>

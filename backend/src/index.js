@@ -15,11 +15,6 @@ const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
-// Connect to Database
-connectDB();
-const holdCleanup = setInterval(() => releaseExpiredHolds().catch(error => console.error('Seat hold cleanup failed:', error.message)), 60 * 1000);
-holdCleanup.unref();
-
 // Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
@@ -48,6 +43,17 @@ app.use('/api/admin', adminRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+
+// Connect to Database and start server
+connectDB().then(() => {
+  const holdCleanup = setInterval(() => releaseExpiredHolds().catch(error => console.error('Seat hold cleanup failed:', error.message)), 60 * 1000);
+  holdCleanup.unref();
+
+  app.listen(PORT, () => {
+    console.log(`Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  });
+}).catch(err => {
+  console.error('Failed to initialize server:', err);
+  process.exit(1);
 });
+

@@ -36,7 +36,7 @@ export default function DashboardPage() {
         particleCount: 150,
         spread: 80,
         origin: { y: 0.6 },
-        colors: ['#0f766e', '#10B981', '#3B82F6']
+        colors: ['#6d28d9', '#10B981', '#3B82F6']
       });
       // Clear state so refresh doesn't trigger confetti again
       window.history.replaceState({}, document.title);
@@ -110,13 +110,13 @@ export default function DashboardPage() {
   };
 
   const getStatusBadge = (status) => {
-    if (status === 'Confirmed') return <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded flex items-center"><CheckCircle2 className="w-3 h-3 mr-1"/> CNF</span>;
+    if (status === 'Confirmed') return <span className="px-2.5 py-1 bg-violet-50 text-violet-700 text-xs font-bold rounded flex items-center"><CheckCircle2 className="w-3 h-3 mr-1"/> CNF</span>;
     if (status === 'Cancelled') return <span className="px-2.5 py-1 bg-red-50 text-red-700 text-xs font-bold rounded flex items-center"><XCircle className="w-3 h-3 mr-1"/> CANCELLED</span>;
     return <span className="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded">{status}</span>;
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-[#0f766e]" /></div>;
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-[#6d28d9]" /></div>;
   }
 
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -140,9 +140,9 @@ export default function DashboardPage() {
         
         {/* Welcome & PNR Check */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="md:col-span-2 bg-[#103f3b] rounded-2xl shadow-lg p-7 text-white flex flex-col justify-center">
+          <div className="md:col-span-2 rounded-2xl shadow-lg p-7 text-white flex flex-col justify-center" style={{background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%)'}}>
             <h1 className="text-2xl font-bold font-heading mb-1">Welcome back, {user?.name.split(' ')[0]}!</h1>
-            <p className="text-slate-300 text-sm">Manage your upcoming journeys and booking history.</p>
+            <p className="text-sm" style={{color: '#c4b5fd'}}>Manage your upcoming journeys and booking history.</p>
           </div>
           
           <div className="md:col-span-1 bg-white rounded-xl shadow-sm border border-slate-200 p-6">
@@ -166,7 +166,7 @@ export default function DashboardPage() {
           </div>
         </div>
         {error && <div role="alert" className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}</div>}
-        {actionMessage && <div role="status" className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">{actionMessage}</div>}
+        {actionMessage && <div role="status" className="mb-6 rounded-xl border border-violet-200 bg-violet-50 p-4 text-sm text-violet-900">{actionMessage}</div>}
 
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <h2 className="text-xl font-bold text-slate-800">Booking history</h2>
@@ -182,7 +182,7 @@ export default function DashboardPage() {
         {(historyFilter === 'all' || historyFilter === 'upcoming') && <>
         <div className="mb-8">
           <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center">
-            <Clock className="w-5 h-5 mr-2 text-[#0f766e]" /> Upcoming Journeys
+            <Clock className="w-5 h-5 mr-2 text-[#6d28d9]" /> Upcoming Journeys
           </h2>
           
           {visibleUpcomingBookings.length === 0 ? (
@@ -191,7 +191,7 @@ export default function DashboardPage() {
                 <TrainIcon className="w-8 h-8 text-slate-400" />
               </div>
               <p className="text-slate-500 font-medium">{upcomingBookings.length ? 'No upcoming journeys match your search.' : 'No upcoming journeys planned.'}</p>
-              <button onClick={() => navigate('/')} className="mt-4 text-[#0f766e] font-semibold hover:underline">Book a Ticket</button>
+              <button onClick={() => navigate('/')} className="mt-4 text-[#6d28d9] font-semibold hover:underline">Book a Ticket</button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -235,7 +235,7 @@ export default function DashboardPage() {
         <section role="dialog" aria-modal="true" aria-labelledby="cancel-booking-title" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
           <h2 id="cancel-booking-title" className="text-xl font-bold text-slate-900">Cancel this simulated booking?</h2>
           <p className="mt-2 text-sm text-slate-600">{cancellationTarget.train?.name} · PNR {cancellationTarget.pnr}</p>
-          <div className="mt-4 rounded-xl bg-slate-50 p-4 text-sm"><div className="flex justify-between gap-3"><span className="text-slate-600">Amount paid</span><span className="font-semibold">₹{cancellationTarget.totalFare}</span></div><div className="mt-2 flex justify-between gap-3"><span className="text-slate-600">Estimated cancellation charge</span><span className="font-semibold">₹{Math.max(60 * (cancellationTarget.passengers?.length || 1), cancellationTarget.totalFare * 0.15).toFixed(2)}</span></div><div className="mt-3 flex justify-between gap-3 border-t border-slate-200 pt-3"><span className="font-semibold">Estimated simulated refund</span><span className="font-bold text-teal-900">₹{Math.max(0, cancellationTarget.totalFare - Math.max(60 * (cancellationTarget.passengers?.length || 1), cancellationTarget.totalFare * 0.15)).toFixed(2)}</span></div></div>
+          <div className="mt-4 rounded-xl bg-slate-50 p-4 text-sm"><div className="flex justify-between gap-3"><span className="text-slate-600">Amount paid</span><span className="font-semibold">₹{cancellationTarget.totalFare}</span></div><div className="mt-2 flex justify-between gap-3"><span className="text-slate-600">Estimated cancellation charge</span><span className="font-semibold">₹{Math.max(60 * (cancellationTarget.passengers?.length || 1), cancellationTarget.totalFare * 0.15).toFixed(2)}</span></div><div className="mt-3 flex justify-between gap-3 border-t border-slate-200 pt-3"><span className="font-semibold">Estimated simulated refund</span><span className="font-bold text-violet-900">₹{Math.max(0, cancellationTarget.totalFare - Math.max(60 * (cancellationTarget.passengers?.length || 1), cancellationTarget.totalFare * 0.15)).toFixed(2)}</span></div></div>
           <p className="mt-3 text-xs text-amber-900">The sample seats will be released. This estimate uses a 15% charge with a ₹60 minimum per passenger; no real payment or refund is processed.</p>
           <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"><button type="button" onClick={() => setCancellationTarget(null)} className="btn-secondary min-h-11">Keep booking</button><button type="button" onClick={() => handleCancel(cancellationTarget)} className="min-h-11 rounded-xl bg-red-700 px-4 py-2 font-semibold text-white hover:bg-red-800">Cancel simulated booking</button></div>
         </section>
@@ -280,7 +280,7 @@ function BookingCard({ booking, onDownload, onCancel, cancelling, badge }) {
           </div>
         </div>
         <div className="mt-3 flex flex-wrap gap-2" aria-label="Passenger coach and seat assignments">
-          {booking.passengers?.map((passenger, index) => <span key={`${passenger.coach}-${passenger.seatNumber}-${index}`} className="rounded-lg bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-900">{passenger.name}: {passenger.coach}/{passenger.seatNumber} · {passenger.seatType}</span>)}
+          {booking.passengers?.map((passenger, index) => <span key={`${passenger.coach}-${passenger.seatNumber}-${index}`} className="rounded-lg bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-900">{passenger.name}: {passenger.coach}/{passenger.seatNumber} · {passenger.seatType}</span>)}
         </div>
       </div>
 
@@ -334,7 +334,7 @@ function BookingCardMini({ booking, onDownload, badge }) {
         <div className="text-right hidden md:block">
           <div className="text-sm font-bold text-slate-800">₹{booking.totalFare}</div>
           {booking.status === 'Cancelled' && (
-            <div className="text-[10px] font-semibold text-emerald-600">Refund: ₹{booking.refundAmount}</div>
+            <div className="text-[10px] font-semibold text-violet-600">Refund: ₹{booking.refundAmount}</div>
           )}
         </div>
         <button 

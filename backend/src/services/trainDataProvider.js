@@ -26,7 +26,7 @@ class RailRadarTrainDataProvider {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.fetch = fetchImpl;
-    this.sourceLabel = 'RailRadar timetable data (third-party; confirm with Indian Railways before travel)';
+    this.sourceLabel = 'RailRadar railway data (third-party; confirm with Indian Railways before travel)';
   }
 
   async request(path, params = {}) {
@@ -56,7 +56,7 @@ class RailRadarTrainDataProvider {
   }
 
   async findTrainsBetweenStations({ from, to, date }) {
-    const result = await this.request(`/trains/between/${encodeURIComponent(from)}/${encodeURIComponent(to)}`, { date, live: false });
+    const result = await this.request(`/trains/between/${encodeURIComponent(from)}/${encodeURIComponent(to)}`, { date, live: true });
     const rows = Array.isArray(result?.trains) ? result.trains : [];
     return rows.map(row => {
       const train = row.train || {};
@@ -73,12 +73,16 @@ class RailRadarTrainDataProvider {
         arrivalDay: row.to?.day || row.from?.day || 1,
         distanceKm: Number(row.distance) || 0,
         durationMinutes: Number(row.duration) || 0,
-        totalHalts: Number(row.totalHaltsBetween) || 0
+        totalHalts: Number(row.totalHaltsBetween) || 0,
+        live: row.live || null
       };
     });
   }
 
   async getSchedule(trainNumber) { return this.request(`/trains/${encodeURIComponent(trainNumber)}`); }
+  async getRunningStatus(trainNumber, date) {
+    return this.request(`/trains/${encodeURIComponent(trainNumber)}/live`, { date, authoritative: true, includeCoordinates: true });
+  }
   async getTrainDirectory() {
     if (!this.apiKey) throw new Error('RailRadar is selected but RAILRADAR_API_KEY is missing. Add a provider key to the backend environment.');
     if (!railRadarTrainsCache) railRadarTrainsCache = this.request('/lookup/trains/prs').catch(error => { railRadarTrainsCache = undefined; throw error; });
@@ -92,9 +96,9 @@ class RailRadarTrainDataProvider {
 }
 
 module.exports = {
-  getTrainDataProvider: () => process.env.TRAIN_DATA_PROVIDER === 'railradar'
-    ? new RailRadarTrainDataProvider()
-    : process.env.TRAIN_DATA_PROVIDER === 'external' ? new ExternalRailwayDataProvider() : new SampleTrainDataProvider(),
+  getTrainDataProvider: () => process.env.TRAIN_DATA_PROVIDER === 'sample'
+    ? new SampleTrainDataProvider()
+    : process.env.TRAIN_DATA_PROVIDER === 'external' ? new ExternalRailwayDataProvider() : new RailRadarTrainDataProvider(),
   SampleTrainDataProvider,
   ExternalRailwayDataProvider,
   RailRadarTrainDataProvider

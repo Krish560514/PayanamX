@@ -20,14 +20,14 @@ const sendTicketEmail = async (userEmail, userName, bookingDetails, pdfBuffer) =
     });
 
     const mailOptions = {
-      from: `"The One Rail" <${process.env.SMTP_USER}>`,
+      from: `"PayanamX" <${process.env.SMTP_USER}>`,
       to: userEmail,
       subject: `Simulated reservation: PNR ${bookingDetails.pnr}`,
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-          <div style="background-color: #C51E3A; color: #fff; padding: 20px; text-align: center;">
+          <div style="background: linear-gradient(135deg, #312e81, #4c1d95); color: #fff; padding: 20px; text-align: center;">
             <h1 style="margin: 0; font-size: 24px;">Sample reservation confirmed</h1>
-            <p style="margin: 5px 0 0; font-size: 14px;">The One Rail · simulated project booking</p>
+            <p style="margin: 5px 0 0; font-size: 14px;">PayanamX · simulated project booking</p>
           </div>
           <div style="padding: 20px;">
             <p>Dear <strong>${userName}</strong>,</p>

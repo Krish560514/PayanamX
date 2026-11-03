@@ -112,11 +112,14 @@ function addTime(timeStr, hoursToAdd, minsToAdd = 0) {
   return { time: `${newHr}:${newMin}`, days };
 }
 
-async function seedDB() {
-  console.log('Connecting to database...');
-  const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/train_booking';
-  await mongoose.connect(mongoURI);
-  console.log(`Connected to database at ${mongoURI}`);
+async function seedDB(options = {}) {
+  const { disconnect = true } = options;
+  if (mongoose.connection.readyState !== 1) {
+    console.log('Connecting to database...');
+    const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/train_booking';
+    await mongoose.connect(mongoURI);
+    console.log(`Connected to database at ${mongoURI}`);
+  }
 
   // Clear existing databases
   console.log('Clearing existing collections...');
@@ -219,12 +222,14 @@ async function seedDB() {
 
     // Set base fare multiplier based on train type
     const baseFare = {
-      SL: Math.round(150 * type.baseMultiplier),
-      '3A': Math.round(450 * type.baseMultiplier),
-      '2A': Math.round(750 * type.baseMultiplier),
-      '1A': Math.round(1200 * type.baseMultiplier),
-      'CC': Math.round(300 * type.baseMultiplier),
-      '2S': Math.round(100 * type.baseMultiplier)
+      // These are class multipliers consumed by calculateSampleFare, not rupee fares.
+      // The shared fare scale converts them to a modest per-kilometre demo estimate.
+      SL: 2.5 * type.baseMultiplier,
+      '3A': 7 * type.baseMultiplier,
+      '2A': 10 * type.baseMultiplier,
+      '1A': 15 * type.baseMultiplier,
+      'CC': 5 * type.baseMultiplier,
+      '2S': 1.5 * type.baseMultiplier
     };
 
     const trainId = new mongoose.Types.ObjectId();
@@ -350,10 +355,17 @@ async function seedDB() {
   console.log(`${reviews.length} reviews seeded.`);
 
   console.log('Database seeding completed successfully!');
-  await mongoose.disconnect();
+  if (disconnect) {
+    await mongoose.disconnect();
+  }
 }
 
-seedDB().catch(err => {
-  console.error('Error seeding database:', err);
-  process.exit(1);
-});
+if (require.main === module) {
+  seedDB().catch(err => {
+    console.error('Error seeding database:', err);
+    process.exit(1);
+  });
+}
+
+module.exports = { seedDB };
+

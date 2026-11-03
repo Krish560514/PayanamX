@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Train, ExternalLink, ShieldCheck } from 'lucide-react';
 
 export default function Footer() {
@@ -10,16 +10,16 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="col-span-1 md:col-span-2 space-y-4">
             <div className="flex items-center space-x-2 text-white">
-              <Train className="h-6 w-6 text-[#d8ef73]" />
-              <span className="font-heading font-extrabold text-xl tracking-tight">
-                The One Rail
+              <Train className="h-6 w-6 text-blue-500" />
+              <span className="font-heading font-bold text-xl tracking-tight text-white">
+                PayanamX
               </span>
             </div>
             <p className="text-sm text-slate-400 max-w-sm">
-              The One Rail is a train reservation demonstration with sample timetables, user-selected seats, and simulated booking status.
+              PayanamX is a train reservation demonstration with sample timetables, user-selected seats, and simulated booking status.
             </p>
             <div className="flex items-center space-x-2 text-xs text-slate-400">
-              <ShieldCheck className="h-4 w-4 text-emerald-500" />
+              <ShieldCheck className="h-4 w-4 text-violet-500" />
               <span>Simulated payment only · no real charge</span>
             </div>
           </div>
@@ -50,7 +50,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 space-y-4 md:space-y-0">
-          <p>© 2026 The One Rail booking demo.</p>
+          <p>© 2026 PayanamX booking demo.</p>
         </div>
       </div>
     </footer>

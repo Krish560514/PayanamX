@@ -7,7 +7,7 @@ const { checkAvailability } = require('../utils/seatAllocator');
 const SeatInventory = require('../models/SeatInventory');
 const { ensureInventory, releaseExpiredHolds } = require('../utils/coachInventory');
 const { getTrainDataProvider } = require('../services/trainDataProvider');
-const { calculateSampleFare } = require('../utils/sampleFare');
+const { calculateSampleFare, normalizeClassFareMultiplier } = require('../utils/sampleFare');
 
 // Get day name from date string
 const getDayName = (dateStr) => {
@@ -112,7 +112,8 @@ exports.searchTrains = async (req, res) => {
         classDetails: {},
         bookable: false,
         distanceKm: train.distanceKm,
-        totalHalts: train.totalHalts
+        totalHalts: train.totalHalts,
+        liveStatus: train.live
       }));
       return res.json({
         success: true,
@@ -167,7 +168,7 @@ exports.searchTrains = async (req, res) => {
           const avail = inventory[0] || { totalSeats: 0, availableSeats: 0 };
 
           // Calculate fare: base fare rate per class * distance (min. Rs 50)
-          const multiplier = train.baseFare[cls] || 1.5;
+          const multiplier = normalizeClassFareMultiplier(cls, train.baseFare?.[cls]);
           const fare = calculateSampleFare(distance, multiplier);
 
           availabilityAndFares[cls] = {

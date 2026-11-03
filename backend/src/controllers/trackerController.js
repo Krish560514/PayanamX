@@ -90,6 +90,13 @@ exports.getLiveStatus = async (req, res) => {
   try {
     const { trainId } = req.params;
 
+    const { getTrainDataProvider } = require('../services/trainDataProvider');
+    const provider = getTrainDataProvider();
+    if (typeof provider.getRunningStatus === 'function' && provider.constructor.name === 'RailRadarTrainDataProvider') {
+      const live = await provider.getRunningStatus(trainId, req.query.date);
+      return res.json({ success: true, dataSource: provider.sourceLabel, data: live });
+    }
+
     const train = await Train.findById(trainId);
     if (!train) {
       return res.status(404).json({ success: false, message: 'Train not found' });

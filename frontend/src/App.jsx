@@ -29,7 +29,7 @@ function App() {
     <Router>
       <AuthProvider>
         <BookingProvider>
-          <div className="flex flex-col min-h-screen bg-[#f2efe8] font-sans text-slate-900">
+          <div className="flex flex-col min-h-screen bg-[#f8fafc] font-sans text-slate-900 selection:bg-blue-600/15 selection:text-blue-900">
             <Navbar />
             
             <main className="flex-grow">

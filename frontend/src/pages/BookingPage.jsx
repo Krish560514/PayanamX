@@ -118,7 +118,7 @@ export default function BookingPage() {
     return <button type="button" key={seat.seatNumber} disabled={disabled} onClick={() => handleSeatSelect(seat.seatNumber)}
       aria-label={`${seat.seatType} ${seat.seatNumber}, ${statusLabel}${recommended ? ', recommended lower berth' : ''}`}
       title={`${seat.seatType} · seat ${seat.seatNumber} · ${statusLabel}`}
-      className={`min-h-11 min-w-11 sm:min-h-14 sm:min-w-14 rounded-lg border text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 ${chosen ? 'bg-[#0f766e] border-[#0f766e] text-white' : disabled && seat.status === 'HELD' ? 'bg-amber-100 border-amber-300 text-amber-950 cursor-not-allowed' : disabled ? 'bg-slate-200 border-slate-300 text-slate-700 cursor-not-allowed' : assignedElsewhere ? 'bg-blue-50 border-blue-300 text-blue-950' : recommended ? 'bg-emerald-50 border-emerald-400 text-emerald-950 hover:bg-emerald-100' : 'bg-white border-slate-300 text-slate-900 hover:bg-slate-100'}`}>
+      className={`min-h-11 min-w-11 sm:min-h-14 sm:min-w-14 rounded-lg border text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700 ${chosen ? 'bg-[#6d28d9] border-[#6d28d9] text-white' : disabled && seat.status === 'HELD' ? 'bg-amber-100 border-amber-300 text-amber-950 cursor-not-allowed' : disabled ? 'bg-slate-200 border-slate-300 text-slate-700 cursor-not-allowed' : assignedElsewhere ? 'bg-blue-50 border-blue-300 text-blue-950' : recommended ? 'bg-violet-50 border-violet-400 text-violet-950 hover:bg-violet-100' : 'bg-white border-slate-300 text-slate-900 hover:bg-slate-100'}`}>
       {seat.seatNumber}<span className="block text-[9px] font-normal">{seat.seatType}{recommended ? ' ★' : assignedElsewhere ? ` P${assignedIndex + 1}` : ''}</span>
     </button>;
   };
@@ -222,7 +222,7 @@ export default function BookingPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="flex items-center space-x-2 mb-6">
-           <button onClick={() => navigate('/search')} className="text-slate-500 hover:text-[#0f766e] font-medium text-sm">
+           <button onClick={() => navigate('/search')} className="text-slate-500 hover:text-[#6d28d9] font-medium text-sm">
              Back to Search Results
            </button>
         </div>
@@ -230,8 +230,8 @@ export default function BookingPage() {
         <div className="mb-7 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
           <ol className="grid grid-cols-3 gap-3 text-xs sm:text-sm" aria-label="Booking progress">
             {[['01', 'Choose train', true], ['02', 'Select seats', true], ['03', 'Review & pay', false]].map(([number, label, complete]) => (
-              <li key={number} className={`flex items-center gap-2 font-semibold ${complete ? 'text-teal-800' : 'text-slate-400'}`}>
-                <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] ${complete ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-500'}`}>{number}</span>
+              <li key={number} className={`flex items-center gap-2 font-semibold ${complete ? 'text-violet-800' : 'text-slate-400'}`}>
+                <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] ${complete ? 'bg-violet-100 text-violet-800' : 'bg-slate-100 text-slate-500'}`}>{number}</span>
                 <span>{label}</span>
                 {number !== '03' && <span className="ml-auto hidden h-px flex-1 bg-slate-200 sm:block" aria-hidden="true" />}
               </li>
@@ -257,8 +257,8 @@ export default function BookingPage() {
                 </div>
               </div>
               <div className="mt-4 md:mt-0 text-right">
-                <div className="text-lg font-bold text-[#0f766e]">{selectedClass} Class</div>
-                <div className="text-xs font-semibold text-emerald-600">Available: {selectedTrain.classDetails[selectedClass].availableSeats}</div>
+                <div className="text-lg font-bold text-[#6d28d9]">{selectedClass} Class</div>
+                <div className="text-xs font-semibold text-violet-600">Available: {selectedTrain.classDetails[selectedClass].availableSeats}</div>
               </div>
             </div>
 
@@ -267,7 +267,7 @@ export default function BookingPage() {
                 <h3 className="font-bold text-lg text-slate-800">Choose your coach and seats</h3>
                 <p className="text-xs text-slate-500 mt-1">Sample inventory · seats are held for {holdMinutes} minutes at checkout. This is not live railway availability.</p>
                 <div className="flex flex-wrap gap-2 mt-4">
-                  {coaches.map(c => <button key={c.coach} type="button" onClick={() => setActiveCoach(c.coach)} className={`rounded-xl border px-4 py-2 text-sm ${activeCoach === c.coach ? 'border-[#0f766e] bg-teal-50 text-[#0f766e]' : 'border-slate-200'}`}>
+                  {coaches.map(c => <button key={c.coach} type="button" onClick={() => setActiveCoach(c.coach)} className={`rounded-xl border px-4 py-2 text-sm ${activeCoach === c.coach ? 'border-[#6d28d9] bg-violet-50 text-[#6d28d9]' : 'border-slate-200'}`}>
                     <strong>{c.coach}</strong><span className="ml-2 text-xs">{c.available}/{c.total} free</span>
                   </button>)}
                 </div>
@@ -275,18 +275,18 @@ export default function BookingPage() {
               <div className="p-5">
                 <div className="mb-4 flex flex-wrap gap-2 text-xs" aria-label="Seat status legend">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-2.5 py-1 text-slate-700"><span className="h-2.5 w-2.5 rounded-sm border border-slate-400 bg-white" /> Available</span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-2.5 py-1 font-semibold text-teal-900"><span className="h-2.5 w-2.5 rounded-sm bg-teal-700" /> Selected</span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-2.5 py-1 font-semibold text-violet-900"><span className="h-2.5 w-2.5 rounded-sm bg-violet-700" /> Selected</span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-blue-900"><span className="h-2.5 w-2.5 rounded-sm bg-blue-500" /> Assigned in this booking</span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-amber-950"><span className="h-2.5 w-2.5 rounded-sm bg-amber-400" /> Temporarily held</span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-slate-700"><span className="h-2.5 w-2.5 rounded-sm bg-slate-400" /> Booked</span>
-                  {!isChairClass && <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-900">★ Lower berth recommendation</span>}
+                  {!isChairClass && <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-2.5 py-1 text-violet-900">★ Lower berth recommendation</span>}
                 </div>
                 <p className="text-xs text-slate-500 mb-4">{lowerBerthGuidance} This is application guidance, not an official railway quota.</p>
                 {maleLowerBerthSelections.map(({ passengerIndex, seatNumber }) => <div key={`${passengerIndex}-${seatNumber}`} role="status" className="mb-3 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
                   Priority reminder: Passenger {passengerIndex + 1}{passengers[passengerIndex]?.name ? ` (${passengers[passengerIndex].name})` : ''} selected lower berth {seatNumber}. This choice is allowed and will remain selected; you can continue booking. Lower berth recommendations for other passengers remain Priority 1: eligible aged passengers, Priority 2: women.
                 </div>)}
                 <div className="flex flex-wrap gap-2 mb-4" aria-label="Choose passenger to assign a seat">
-                  {passengers.map((passenger, index) => <button type="button" key={index} onClick={() => setActivePassengerIndex(index)} className={`rounded-xl border px-3 py-2 text-xs ${activePassengerIndex === index ? 'border-[#0f766e] bg-teal-50 text-[#0f766e]' : 'border-slate-200 text-slate-600'}`}>
+                  {passengers.map((passenger, index) => <button type="button" key={index} onClick={() => setActivePassengerIndex(index)} className={`rounded-xl border px-3 py-2 text-xs ${activePassengerIndex === index ? 'border-[#6d28d9] bg-violet-50 text-[#6d28d9]' : 'border-slate-200 text-slate-600'}`}>
                     Passenger {index + 1}{passenger.name ? ` · ${passenger.name}` : ''}{Number.isInteger(selectedSeats[index]) ? ` · Seat ${selectedSeats[index]}` : ' · choose seat'}
                   </button>)}
                 </div>
@@ -387,7 +387,7 @@ export default function BookingPage() {
                 {passengers.length < 6 && (
                   <button 
                     onClick={addPassenger}
-                    className="flex items-center space-x-2 text-[#0f766e] font-semibold text-sm hover:underline"
+                    className="flex items-center space-x-2 text-[#6d28d9] font-semibold text-sm hover:underline"
                   >
                     <UserPlus className="h-4 w-4" />
                     <span>Add Passenger</span>
@@ -424,11 +424,11 @@ export default function BookingPage() {
               </div>
               
               <div className="p-5 space-y-4 text-sm">
-                <div className="rounded-xl bg-teal-50 p-3">
-                  <h4 className="mb-2 text-xs font-bold uppercase tracking-wide text-teal-950">Passenger seats</h4>
+                <div className="rounded-xl bg-violet-50 p-3">
+                  <h4 className="mb-2 text-xs font-bold uppercase tracking-wide text-violet-950">Passenger seats</h4>
                   {passengers.map((passenger, index) => {
                     const seat = coachSeats.find(item => item.seatNumber === selectedSeats[index]);
-                    return <div key={`summary-${index}`} className="flex items-start justify-between gap-2 border-b border-teal-100 py-2 last:border-0 last:pb-0 text-xs"><span className="min-w-0 truncate text-teal-950">{passenger.name || `Passenger ${index + 1}`}</span><span className="shrink-0 font-semibold text-teal-950">{Number.isInteger(selectedSeats[index]) ? `${activeCoach}/${selectedSeats[index]} · ${seat?.seatType || 'Seat'}` : 'Seat pending'}</span></div>;
+                    return <div key={`summary-${index}`} className="flex items-start justify-between gap-2 border-b border-violet-100 py-2 last:border-0 last:pb-0 text-xs"><span className="min-w-0 truncate text-violet-950">{passenger.name || `Passenger ${index + 1}`}</span><span className="shrink-0 font-semibold text-violet-950">{Number.isInteger(selectedSeats[index]) ? `${activeCoach}/${selectedSeats[index]} · ${seat?.seatType || 'Seat'}` : 'Seat pending'}</span></div>;
                   })}
                 </div>
                 <div className="flex justify-between text-slate-600"><span>Sample fare per passenger</span><span className="font-medium">₹{farePerPassenger}</span></div>
@@ -443,7 +443,7 @@ export default function BookingPage() {
                 
                 <div className="border-t border-slate-100 pt-4 flex justify-between items-center">
                   <span className="font-bold text-slate-800">Total Amount</span>
-                  <span className="text-2xl font-bold text-[#0f766e]">₹{totalFare}</span>
+                  <span className="text-2xl font-bold text-[#6d28d9]">₹{totalFare}</span>
                 </div>
               </div>
 
@@ -466,7 +466,7 @@ export default function BookingPage() {
                   )}
                 </button>
       <div className="mt-4 flex items-center justify-center space-x-1.5 text-xs text-slate-500">
-                  <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                  <ShieldCheck className="h-4 w-4 text-violet-500" />
                   <span>Simulated payment only · no charge is made</span>
                 </div>
               </div>
@@ -501,7 +501,7 @@ export default function BookingPage() {
             </div>
             <div className="rounded-xl border border-slate-200 p-4">
               <div className="flex justify-between text-sm text-slate-600"><span>Sample fare ({passengers.length} × ₹{farePerPassenger})</span><span>₹{totalFare}</span></div>
-              <div className="mt-3 flex justify-between border-t border-slate-100 pt-3 font-bold text-slate-800"><span>Total simulated amount</span><span className="text-lg text-[#0f766e]">₹{totalFare}</span></div>
+              <div className="mt-3 flex justify-between border-t border-slate-100 pt-3 font-bold text-slate-800"><span>Total simulated amount</span><span className="text-lg text-[#6d28d9]">₹{totalFare}</span></div>
             </div>
             <p className="text-xs text-amber-800">This is a simulated project reservation. No real payment or railway ticket is issued. Seats are held for up to {holdMinutes} minutes after you continue; if the hold expires, you must select available seats again.</p>
             <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
@@ -527,21 +527,21 @@ export default function BookingPage() {
               </div>}
               <div className="flex justify-between items-center mb-6 p-4 bg-red-50 rounded-lg border border-red-100">
                 <span className="font-semibold text-slate-700">Total Amount</span>
-                <span className="text-2xl font-bold text-[#0f766e]">₹{totalFare}</span>
+                <span className="text-2xl font-bold text-[#6d28d9]">₹{totalFare}</span>
               </div>
               
               <h4 className="font-bold text-slate-700 mb-3">Select Payment Method</h4>
               <div className="mb-6 space-y-3">
-                <label className={`flex items-center p-3 border rounded-xl cursor-pointer transition ${mockMethod === 'UPI' ? 'border-[#0f766e] bg-teal-50' : 'hover:bg-slate-50 border-slate-200'}`}>
-                  <input type="radio" name="method" checked={mockMethod === 'UPI'} onChange={() => setMockMethod('UPI')} className="mr-3 text-[#0f766e] accent-[#0f766e] w-4 h-4" />
+                <label className={`flex items-center p-3 border rounded-xl cursor-pointer transition ${mockMethod === 'UPI' ? 'border-[#6d28d9] bg-violet-50' : 'hover:bg-slate-50 border-slate-200'}`}>
+                  <input type="radio" name="method" checked={mockMethod === 'UPI'} onChange={() => setMockMethod('UPI')} className="mr-3 text-[#6d28d9] accent-[#6d28d9] w-4 h-4" />
                   <span className="font-semibold text-slate-800">UPI (GPay, PhonePe, Paytm)</span>
                 </label>
-                <label className={`flex items-center p-3 border rounded-xl cursor-pointer transition ${mockMethod === 'Card' ? 'border-[#0f766e] bg-teal-50' : 'hover:bg-slate-50 border-slate-200'}`}>
-                  <input type="radio" name="method" checked={mockMethod === 'Card'} onChange={() => setMockMethod('Card')} className="mr-3 text-[#0f766e] accent-[#0f766e] w-4 h-4" />
+                <label className={`flex items-center p-3 border rounded-xl cursor-pointer transition ${mockMethod === 'Card' ? 'border-[#6d28d9] bg-violet-50' : 'hover:bg-slate-50 border-slate-200'}`}>
+                  <input type="radio" name="method" checked={mockMethod === 'Card'} onChange={() => setMockMethod('Card')} className="mr-3 text-[#6d28d9] accent-[#6d28d9] w-4 h-4" />
                   <span className="font-semibold text-slate-800">Credit / Debit Card</span>
                 </label>
-                <label className={`flex items-center p-3 border rounded-xl cursor-pointer transition ${mockMethod === 'NetBanking' ? 'border-[#0f766e] bg-teal-50' : 'hover:bg-slate-50 border-slate-200'}`}>
-                  <input type="radio" name="method" checked={mockMethod === 'NetBanking'} onChange={() => setMockMethod('NetBanking')} className="mr-3 text-[#0f766e] accent-[#0f766e] w-4 h-4" />
+                <label className={`flex items-center p-3 border rounded-xl cursor-pointer transition ${mockMethod === 'NetBanking' ? 'border-[#6d28d9] bg-violet-50' : 'hover:bg-slate-50 border-slate-200'}`}>
+                  <input type="radio" name="method" checked={mockMethod === 'NetBanking'} onChange={() => setMockMethod('NetBanking')} className="mr-3 text-[#6d28d9] accent-[#6d28d9] w-4 h-4" />
                   <span className="font-semibold text-slate-800">Net Banking</span>
                 </label>
               </div>

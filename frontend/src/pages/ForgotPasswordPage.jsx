@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Mail, Key, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -79,7 +79,7 @@ export default function ForgotPasswordPage() {
           )}
 
           {message && (
-            <div className="mb-6 p-3.5 bg-green-50 border border-green-100 text-sm text-green-700 rounded-md font-medium">
+            <div className="mb-6 p-3.5 bg-violet-50 border border-violet-100 text-sm text-violet-700 rounded-md font-medium">
               {message}
             </div>
           )}
@@ -179,7 +179,7 @@ export default function ForgotPasswordPage() {
           )}
 
           <div className="mt-8 pt-6 border-t border-slate-100 text-center">
-            <Link to="/login" className="text-sm font-semibold text-[#0f766e] hover:underline">
+            <Link to="/login" className="text-sm font-semibold text-[#6d28d9] hover:underline">
               Back to Login
             </Link>
           </div>

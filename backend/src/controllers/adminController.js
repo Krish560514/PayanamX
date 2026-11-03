@@ -18,7 +18,7 @@ function validateFareRates(value) {
   const validClasses = new Set(['SL', '3A', '3E', '2A', '1A', 'CC', '2S']);
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw Object.assign(new Error('Class fare multipliers must be a JSON object.'), { status: 400 });
   for (const [seatClass, rate] of Object.entries(value)) {
-    if (!validClasses.has(seatClass) || !Number.isFinite(Number(rate)) || Number(rate) < 0 || Number(rate) > 1000) throw Object.assign(new Error(`Fare multiplier for ${seatClass} must be between 0 and 1000.`), { status: 400 });
+    if (!validClasses.has(seatClass) || !Number.isFinite(Number(rate)) || Number(rate) < 0 || Number(rate) > 30) throw Object.assign(new Error(`Fare multiplier for ${seatClass} must be between 0 and 30.`), { status: 400 });
   }
 }
 

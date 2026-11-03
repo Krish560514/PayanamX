@@ -9,7 +9,7 @@ const SeatInventory = require('../models/SeatInventory');
 const Payment = require('../models/Payment');
 const Notification = require('../models/Notification');
 const { releaseExpiredHolds } = require('../utils/coachInventory');
-const { calculateSampleFare } = require('../utils/sampleFare');
+const { calculateSampleFare, normalizeClassFareMultiplier } = require('../utils/sampleFare');
 const { generateTicketPDF } = require('../utils/pdfGenerator');
 const { sendTicketEmail } = require('../utils/mailer');
 
@@ -69,7 +69,7 @@ exports.createBookingOrder = async (req, res) => {
 
     // 1. Calculate fare
     const distance = toStop.distanceKm - fromStop.distanceKm;
-    const multiplier = train.baseFare[seatClass] || 1.5;
+    const multiplier = normalizeClassFareMultiplier(seatClass, train.baseFare?.[seatClass]);
     const baseFare = calculateSampleFare(distance, multiplier);
     const totalFare = baseFare * passengers.length;
 

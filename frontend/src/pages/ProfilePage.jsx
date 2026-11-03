@@ -94,7 +94,7 @@ export default function ProfilePage() {
           <div className="w-full md:w-64 flex-shrink-0">
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
               <div className="p-6 text-center border-b border-slate-100 bg-slate-50">
-                <div aria-hidden="true" className="w-24 h-24 bg-gradient-to-br from-teal-700 to-emerald-950 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-bold text-white shadow-lg shadow-teal-900/20">
+                <div aria-hidden="true" className="w-24 h-24 bg-gradient-to-br from-violet-700 to-violet-950 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-bold text-white shadow-lg shadow-violet-900/20">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
                 <h3 className="font-bold text-slate-800">{user.name}</h3>
@@ -103,13 +103,13 @@ export default function ProfilePage() {
               <div className="p-2">
                 <button 
                   onClick={() => setActiveTab('profile')}
-                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-3 transition ${activeTab === 'profile' ? 'bg-teal-50 text-[#0f766e]' : 'text-slate-600 hover:bg-slate-50'}`}
+                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-3 transition ${activeTab === 'profile' ? 'bg-violet-50 text-[#6d28d9]' : 'text-slate-600 hover:bg-slate-50'}`}
                 >
                   <User className="w-4 h-4" /> <span>Personal Details</span>
                 </button>
                 <button 
                   onClick={() => setActiveTab('password')}
-                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-3 transition ${activeTab === 'password' ? 'bg-teal-50 text-[#0f766e]' : 'text-slate-600 hover:bg-slate-50'}`}
+                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-3 transition ${activeTab === 'password' ? 'bg-violet-50 text-[#6d28d9]' : 'text-slate-600 hover:bg-slate-50'}`}
                 >
                   <Shield className="w-4 h-4" /> <span>Security</span>
                 </button>
@@ -128,7 +128,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="p-6">
                   {profileError && <div role="alert" className="mb-6 p-3 bg-red-50 text-red-700 text-sm rounded-xl font-medium">{profileError}</div>}
-                  {profileMessage && <div className="mb-6 p-3 bg-emerald-50 text-emerald-700 text-sm rounded font-medium">{profileMessage}</div>}
+                  {profileMessage && <div className="mb-6 p-3 bg-violet-50 text-violet-700 text-sm rounded font-medium">{profileMessage}</div>}
                   
                   <form onSubmit={handleUpdateProfile} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -158,7 +158,7 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="border-t border-slate-100 pt-5">
-                      <div className="flex justify-between items-center mb-3"><div><h3 className="font-bold text-slate-800">Saved passengers</h3><p className="text-xs text-slate-500">Keep frequently used passenger details for later bookings.</p></div><button type="button" onClick={() => setSavedTravellers([...savedTravellers, { name: '', age: '', gender: 'Male' }])} disabled={savedTravellers.length >= 20} className="text-sm font-semibold text-[#0f766e] disabled:opacity-40">Add passenger</button></div>
+                      <div className="flex justify-between items-center mb-3"><div><h3 className="font-bold text-slate-800">Saved passengers</h3><p className="text-xs text-slate-500">Keep frequently used passenger details for later bookings.</p></div><button type="button" onClick={() => setSavedTravellers([...savedTravellers, { name: '', age: '', gender: 'Male' }])} disabled={savedTravellers.length >= 20} className="text-sm font-semibold text-[#6d28d9] disabled:opacity-40">Add passenger</button></div>
                       <div className="space-y-3">{savedTravellers.map((traveller, index) => <div key={index} className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
                         <input aria-label={`Saved passenger ${index + 1} full name`} autoComplete="off" maxLength="100" className="form-input sm:col-span-6" placeholder="Full name" value={traveller.name} onChange={e => setSavedTravellers(savedTravellers.map((p,i) => i === index ? { ...p, name: e.target.value } : p))} />
                         <input aria-label={`Saved passenger ${index + 1} age`} className="form-input sm:col-span-2" type="number" min="1" max="120" placeholder="Age" value={traveller.age} onChange={e => setSavedTravellers(savedTravellers.map((p,i) => i === index ? { ...p, age: e.target.value } : p))} />
@@ -185,7 +185,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="p-6">
                   {passwordError && <div role="alert" className="mb-6 p-3 bg-red-50 text-red-700 text-sm rounded-xl font-medium">{passwordError}</div>}
-                  {passwordMessage && <div className="mb-6 p-3 bg-emerald-50 text-emerald-700 text-sm rounded font-medium">{passwordMessage}</div>}
+                  {passwordMessage && <div className="mb-6 p-3 bg-violet-50 text-violet-700 text-sm rounded font-medium">{passwordMessage}</div>}
                   
                   <form onSubmit={handleUpdatePassword} className="space-y-6 max-w-md">
                     <div className="space-y-1.5">

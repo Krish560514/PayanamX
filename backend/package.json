@@ -1,5 +1,5 @@
 {
-  "name": "irctc-booking-backend",
+  "name": "payanamx-backend",
   "version": "1.0.0",
   "description": "Backend server for Online Train Ticket Booking System",
   "main": "src/index.js",
@@ -8,6 +8,7 @@
     "dev": "nodemon src/index.js",
     "seed": "node scripts/seed.js",
     "seed:sample": "node scripts/seedSampleTrains.js",
+    "fares:normalize": "node scripts/normalizeTrainFares.js",
     "test": "node --test",
     "test:smoke": "node scripts/smokeBookingFlow.js"
   },
@@ -25,7 +26,8 @@
     "razorpay": "^2.9.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "mongodb-memory-server": "^11.3.0",
+    "nodemon": "^1.0.2"
   },
   "engines": {
     "node": ">=18.0.0"

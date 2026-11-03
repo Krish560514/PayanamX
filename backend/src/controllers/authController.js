@@ -116,7 +116,7 @@ exports.forgotPassword = async (req, res) => {
         });
 
         await transporter.sendMail({
-          from: `"The One Rail Support" <${process.env.SMTP_USER}>`,
+          from: `"PayanamX Support" <${process.env.SMTP_USER}>`,
           to: user.email,
           subject: 'Password Reset OTP - Online Train Booking',
           text: `Your OTP for resetting password is: ${otp}. It is valid for 10 minutes.`,

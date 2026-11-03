@@ -23,7 +23,7 @@ test('RailRadar train search maps real timetable fields without inventing class,
   const provider = new RailRadarTrainDataProvider({
     apiKey: 'test-secret',
     fetchImpl: async url => {
-      assert.match(`${url}`, /\/trains\/between\/MAS\/CBE\?date=2030-01-01&live=false$/);
+      assert.match(`${url}`, /\/trains\/between\/MAS\/CBE\?date=2030-01-01&live=true$/);
       return { ok: true, json: async () => ({ success: true, data: { trains: [{
         train: { number: '12673', name: 'Cheran Express', type: 'Superfast', runDays: ['mon', 'fri'] },
         from: { departure: '22:10', day: 1 }, to: { arrival: '06:00', day: 2 }, duration: 470, distance: 500, totalHaltsBetween: 12
@@ -42,4 +42,15 @@ test('RailRadar train search maps real timetable fields without inventing class,
 test('RailRadar provider fails clearly when no key is configured', async () => {
   const provider = new RailRadarTrainDataProvider({ apiKey: '', fetchImpl: async () => { throw new Error('must not call'); } });
   await assert.rejects(provider.getStationDirectory(), /RAILRADAR_API_KEY is missing/);
+});
+
+test('RailRadar live status requests authoritative current data for the selected journey date', async () => {
+  const provider = new RailRadarTrainDataProvider({
+    apiKey: 'test-secret',
+    fetchImpl: async url => {
+      assert.match(`${url}`, /\/trains\/12673\/live\?date=2030-01-01&authoritative=true&includeCoordinates=true$/);
+      return { ok: true, json: async () => ({ success: true, data: { status: 'running', isLive: true } }) };
+    }
+  });
+  assert.deepEqual(await provider.getRunningStatus('12673', '2030-01-01'), { status: 'running', isLive: true });
 });

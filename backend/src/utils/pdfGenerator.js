@@ -27,13 +27,13 @@ const generateTicketPDF = async (booking) => {
       const qrCodeDataUrl = await QRCode.toDataURL(qrPayload);
 
       // Title & Branding Header
-      doc.fillColor('#103f3b')
+      doc.fillColor('#312e81')
          .rect(0, 0, 595.28, 80) // Header band
          .fill();
 
       doc.fillColor('#FFFFFF')
          .fontSize(22)
-         .text('THE ONE RAIL · SIMULATED RESERVATION', 40, 28, { characterSpacing: 0.5 });
+         .text('PAYANAMX · SIMULATED RESERVATION', 40, 28, { characterSpacing: 0.5 });
       
       doc.fontSize(10)
          .text('DEMO BOOKING · NOT A VALID INDIAN RAILWAYS TICKET', 40, 54, { characterSpacing: 0.3 });
@@ -43,7 +43,7 @@ const generateTicketPDF = async (booking) => {
 
       // PNR and Booking ID Bar
       doc.rect(40, 95, 515, 35)
-         .fillColor('#F5F5F7')
+         .fillColor('#F5F0FF')
          .fill()
          .stroke();
 
@@ -201,7 +201,7 @@ const generateTicketPDF = async (booking) => {
       // Footer
       doc.fontSize(8)
          .fillColor('#999999')
-         .text('The One Rail · Sample reservation only · Not valid for travel', 40, 760, { align: 'center' });
+         .text('PayanamX · Sample reservation only · Not valid for travel', 40, 760, { align: 'center' });
 
       doc.end();
     } catch (error) {

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+﻿import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -75,7 +75,7 @@ export default function LoginPage() {
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
                 <label htmlFor="login-password" className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Password</label>
-                <Link to="/forgot-password" className="text-xs font-semibold text-[#0f766e] hover:underline">
+                <Link to="/forgot-password" className="text-xs font-semibold text-[#6d28d9] hover:underline">
                   Forgot Password?
                 </Link>
               </div>
@@ -132,7 +132,7 @@ export default function LoginPage() {
           <div className="mt-8 pt-6 border-t border-slate-100 text-center">
             <p className="text-sm text-slate-500">
               Don't have an account?{' '}
-              <Link to="/register" className="font-semibold text-[#0f766e] hover:underline">
+              <Link to="/register" className="font-semibold text-[#6d28d9] hover:underline">
                 Create Account
               </Link>
             </p>
