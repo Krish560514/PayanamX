@@ -1,11 +1,13 @@
 ﻿import React, { useState, useContext, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const { login, token } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = location.state?.from?.pathname || location.state?.from || '/dashboard';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,8 +17,8 @@ export default function LoginPage() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (token) navigate('/dashboard');
-  }, [token, navigate]);
+    if (token) navigate(returnTo, { replace: true });
+  }, [token, navigate, returnTo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +31,7 @@ export default function LoginPage() {
     setSubmitting(false);
 
     if (result.success) {
-      navigate('/dashboard');
+      navigate(returnTo, { replace: true });
     } else {
       setError(result.message);
     }

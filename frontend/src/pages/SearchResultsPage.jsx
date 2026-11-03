@@ -80,14 +80,12 @@ export default function SearchResultsPage() {
   }, [searchParams, navigate]);
 
   const handleBookNow = (train, cls) => {
-    if (!user) {
-      // Redirect to login but keep state in context
-      navigate('/login');
-      return;
-    }
-    
     setSelectedTrain(train);
     setSelectedClass(cls);
+    if (!user) {
+      navigate('/login', { state: { from: '/booking' } });
+      return;
+    }
     navigate('/booking');
   };
 
@@ -320,6 +318,7 @@ function TrainCard({ train, onBook, searchClass, favourite, onFavourite }) {
 
       {/* Class Availabilities Grid */}
       {classes.length > 0 ? <div className="p-4 bg-slate-50 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        {train.dataSource === 'railradar' && <p className="col-span-full rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">Demo reservation only. Fares and seats are simulated by this app and are not railway availability.</p>}
         {classes.map(cls => {
           const details = train.classDetails[cls];
           if (!details) return null;

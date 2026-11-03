@@ -240,15 +240,15 @@ export default function AdminPage() {
             <LayoutDashboard className="w-5 h-5 mr-2 text-[#d8ef73]" /> Admin Portal
           </h2>
           <nav className="space-y-2">
-            <a href="#" className="flex items-center px-4 py-3 bg-[#6d28d9] rounded-lg text-sm font-semibold transition">
+            <button type="button" onClick={() => setTab('trains')} aria-current={tab === 'trains' ? 'page' : undefined} className={`w-full flex items-center px-4 py-3 rounded-lg text-left text-sm font-semibold transition ${tab === 'trains' ? 'bg-[#6d28d9] text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'}`}>
               <LayoutDashboard className="w-4 h-4 mr-3" /> Dashboard
-            </a>
-            <a href="#" className="flex items-center px-4 py-3 hover:bg-slate-800 rounded-lg text-sm font-semibold text-slate-300 hover:text-white transition cursor-not-allowed opacity-50">
+            </button>
+            <button type="button" onClick={() => setTab('bookings')} aria-current={tab === 'bookings' ? 'page' : undefined} className={`w-full flex items-center px-4 py-3 rounded-lg text-left text-sm font-semibold transition ${tab === 'bookings' ? 'bg-[#6d28d9] text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'}`}>
               <Ticket className="w-4 h-4 mr-3" /> Manage Bookings
-            </a>
-            <a href="#" className="flex items-center px-4 py-3 hover:bg-slate-800 rounded-lg text-sm font-semibold text-slate-300 hover:text-white transition cursor-not-allowed opacity-50">
+            </button>
+            <button type="button" onClick={() => setTab('users')} aria-current={tab === 'users' ? 'page' : undefined} className={`w-full flex items-center px-4 py-3 rounded-lg text-left text-sm font-semibold transition ${tab === 'users' ? 'bg-[#6d28d9] text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'}`}>
               <Users className="w-4 h-4 mr-3" /> User Accounts
-            </a>
+            </button>
           </nav>
         </div>
       </div>

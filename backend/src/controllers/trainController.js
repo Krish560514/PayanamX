@@ -9,6 +9,55 @@ const { ensureInventory, releaseExpiredHolds } = require('../utils/coachInventor
 const { getTrainDataProvider } = require('../services/trainDataProvider');
 const { calculateSampleFare, normalizeClassFareMultiplier } = require('../utils/sampleFare');
 
+const DEMO_EXTERNAL_CLASSES = ['SL', '3A', '2A', 'CC', '2S'];
+const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+async function getDemoTrainForExternalResult(train, fromCode, toCode, sourceName, destinationName, date) {
+  const localTrain = await Train.findOne({ trainNumber: train.trainNumber, active: true }).populate('source destination');
+  const localRoute = localTrain ? await Route.findOne({ train: localTrain._id }).populate('stops.station') : null;
+  const localFrom = localRoute?.stops.find(stop => stop.station?.code === fromCode);
+  const localTo = localRoute?.stops.find(stop => stop.station?.code === toCode);
+  if (localTrain && localTrain.runsOn.includes(getDayName(date)) && localFrom && localTo && localFrom.stopIndex < localTo.stopIndex) {
+    return { train: localTrain, fromStop: localFrom, toStop: localTo };
+  }
+
+  // The external timetable has no reservation inventory. Create a clearly simulated,
+  // route-specific local record so the existing coach/seat/checkout flow can run.
+  const [fromStation, toStation] = await Promise.all([
+    Station.findOneAndUpdate({ code: fromCode }, { $setOnInsert: { code: fromCode, name: sourceName, state: 'Unknown', zone: 'UNK' } }, { upsert: true, new: true, setDefaultsOnInsert: true }),
+    Station.findOneAndUpdate({ code: toCode }, { $setOnInsert: { code: toCode, name: destinationName, state: 'Unknown', zone: 'UNK' } }, { upsert: true, new: true, setDefaultsOnInsert: true })
+  ]);
+  const safeNumber = String(train.trainNumber).replace(/[^A-Za-z0-9]/g, '').slice(-12) || 'UNKNOWN';
+  const syntheticNumber = `RR${safeNumber}-${fromCode}-${toCode}`;
+  const runsOn = train.runningDays?.length ? train.runningDays.filter(day => WEEKDAYS.includes(day)) : WEEKDAYS;
+  const classes = localTrain?.classes?.length ? localTrain.classes : DEMO_EXTERNAL_CLASSES;
+  const demoTrain = await Train.findOneAndUpdate(
+    { trainNumber: syntheticNumber },
+    { $setOnInsert: {
+      trainNumber: syntheticNumber,
+      name: train.name,
+      source: fromStation._id,
+      destination: toStation._id,
+      classes,
+      dataSource: 'external',
+      runsOn: runsOn.length ? runsOn : WEEKDAYS,
+      active: true
+    } },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+  const distance = Math.max(1, Number(train.distanceKm) || 1);
+  const route = await Route.findOneAndUpdate(
+    { train: demoTrain._id },
+    { $setOnInsert: { train: demoTrain._id, stops: [
+      { station: fromStation._id, stopIndex: 0, arrivalTime: train.departureTime || '00:00', departureTime: train.departureTime || '00:00', distanceKm: 0, dayNumber: 1 },
+      { station: toStation._id, stopIndex: 1, arrivalTime: train.arrivalTime || train.departureTime || '00:00', departureTime: train.arrivalTime || train.departureTime || '00:00', distanceKm: distance, dayNumber: 1 }
+    ] } },
+    { upsert: true, new: true }
+  );
+  const populated = await Route.populate(route, 'stops.station');
+  return { train: demoTrain, fromStop: populated.stops[0], toStop: populated.stops[1] };
+}
+
 // Get day name from date string
 const getDayName = (dateStr) => {
   const [year, month, day] = dateStr.split('-').map(Number);
@@ -92,28 +141,51 @@ exports.searchTrains = async (req, res) => {
       if (!sourceStation || !destinationStation) return res.status(404).json({ success: false, message: 'Railway station code was not found by the timetable provider.' });
       const records = await provider.findTrainsBetweenStations({ from: fromCode, to: toCode, date });
       const formatDuration = minutes => `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
-      const trains = records.map(train => ({
-        trainId: `external:${train.trainNumber}`,
-        trainNumber: train.trainNumber,
-        name: train.name,
-        trainType: train.type,
-        source: sourceStation.name,
-        sourceCode: fromCode,
-        destination: destinationStation.name,
-        destinationCode: toCode,
-        boardingStation: { id: fromCode, name: sourceStation.name, code: fromCode, departureTime: train.departureTime, arrivalTime: train.departureTime, stopIndex: 0 },
-        deboardingStation: { id: toCode, name: destinationStation.name, code: toCode, departureTime: train.arrivalTime, arrivalTime: train.arrivalTime, stopIndex: train.totalHalts },
-        duration: train.durationMinutes ? formatDuration(train.durationMinutes) : 'Schedule duration unavailable',
-        runningDays: train.runningDays,
-        classes: [],
-        dataSource: 'railradar',
-        dataSourceLabel: provider.sourceLabel,
-        availabilityLabel: 'Not supplied by timetable data',
-        classDetails: {},
-        bookable: false,
-        distanceKm: train.distanceKm,
-        totalHalts: train.totalHalts,
-        liveStatus: train.live
+      const trains = await Promise.all(records.map(async train => {
+        const { train: localTrain, fromStop, toStop } = await getDemoTrainForExternalResult(
+          train, fromCode, toCode, sourceStation.name, destinationStation.name, date
+        );
+        const canDemoBook = localTrain.runsOn.includes(getDayName(date));
+        const classes = canDemoBook ? localTrain.classes : [];
+        const classDetails = {};
+        if (canDemoBook) {
+          for (const cls of classes) {
+            await ensureInventory(localTrain, date, cls);
+            await releaseExpiredHolds({ train: localTrain._id, date, seatClass: cls });
+            const inventory = await SeatInventory.aggregate([
+              { $match: { train: localTrain._id, date, seatClass: cls } },
+              { $group: { _id: null, availableSeats: { $sum: { $cond: [{ $eq: ['$status', 'AVAILABLE'] }, 1, 0] } } } }
+            ]);
+            const distance = toStop.distanceKm - fromStop.distanceKm;
+            classDetails[cls] = {
+              availableSeats: inventory[0]?.availableSeats || 0,
+              fare: calculateSampleFare(distance, normalizeClassFareMultiplier(cls, localTrain.baseFare?.[cls]))
+            };
+          }
+        }
+        return {
+          trainId: canDemoBook ? localTrain._id : `external:${train.trainNumber}`,
+          trainNumber: train.trainNumber,
+          name: train.name,
+          trainType: train.type,
+          source: sourceStation.name,
+          sourceCode: fromCode,
+          destination: destinationStation.name,
+          destinationCode: toCode,
+          boardingStation: canDemoBook ? { id: fromStop.station._id, name: fromStop.station.name, code: fromCode, departureTime: train.departureTime, arrivalTime: train.departureTime, stopIndex: fromStop.stopIndex } : { id: fromCode, name: sourceStation.name, code: fromCode, departureTime: train.departureTime, arrivalTime: train.departureTime, stopIndex: 0 },
+          deboardingStation: canDemoBook ? { id: toStop.station._id, name: toStop.station.name, code: toCode, departureTime: train.arrivalTime, arrivalTime: train.arrivalTime, stopIndex: toStop.stopIndex } : { id: toCode, name: destinationStation.name, code: toCode, departureTime: train.arrivalTime, arrivalTime: train.arrivalTime, stopIndex: train.totalHalts },
+          duration: train.durationMinutes ? formatDuration(train.durationMinutes) : 'Schedule duration unavailable',
+          runningDays: train.runningDays,
+          classes,
+          dataSource: 'railradar',
+          dataSourceLabel: provider.sourceLabel,
+          availabilityLabel: canDemoBook ? 'Simulated demo inventory · not railway availability' : 'Train does not run on selected date',
+          classDetails,
+          bookable: canDemoBook,
+          distanceKm: train.distanceKm,
+          totalHalts: train.totalHalts,
+          liveStatus: train.live
+        };
       }));
       return res.json({
         success: true,
