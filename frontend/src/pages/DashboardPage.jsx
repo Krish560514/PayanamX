@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import confetti from 'canvas-confetti';
 import { AuthContext } from '../context/AuthContext';
 import { Download, XCircle, Search, Clock, CheckCircle2, AlertCircle, Loader2, FileText } from 'lucide-react';
@@ -47,7 +47,7 @@ export default function DashboardPage() {
 
   const fetchBookings = async () => {
     try {
-      const [res, noticeRes] = await Promise.all([axios.get('/api/bookings/history'), axios.get('/api/auth/notifications')]);
+      const [res, noticeRes] = await Promise.all([api.get('/api/bookings/history'), api.get('/api/auth/notifications')]);
       setBookings(res.data.bookings);
       setNotifications(noticeRes.data.notifications || []);
     } catch (err) {
@@ -59,7 +59,7 @@ export default function DashboardPage() {
 
   const handleDownload = async (id, pnr) => {
     try {
-      const res = await axios.get(`/api/bookings/${id}/download`, {
+      const res = await api.get(`/api/bookings/${id}/download`, {
         responseType: 'blob'
       });
       const url = window.URL.createObjectURL(new Blob([res.data]));
@@ -80,7 +80,7 @@ export default function DashboardPage() {
     setActionMessage('');
     setCancellingId(booking._id);
     try {
-      const res = await axios.post(`/api/bookings/${booking._id}/cancel`);
+      const res = await api.post(`/api/bookings/${booking._id}/cancel`);
       if (res.data.success) {
         setActionMessage(`Simulated reservation cancelled. Estimated refund recorded: ₹${res.data.refundDetails.refundAmount}.`);
         fetchBookings();
@@ -104,7 +104,7 @@ export default function DashboardPage() {
 
   const markNotificationRead = async (notification) => {
     try {
-      await axios.put(`/api/auth/notifications/${notification._id}/read`);
+      await api.put(`/api/auth/notifications/${notification._id}/read`);
       setNotifications(current => current.map(item => item._id === notification._id ? { ...item, read: true } : item));
     } catch (err) { setError(err.response?.data?.message || 'Could not update notification.'); }
   };

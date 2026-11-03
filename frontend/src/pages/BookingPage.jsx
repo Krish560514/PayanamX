@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { BookingContext } from '../context/BookingContext';
 import { AuthContext } from '../context/AuthContext';
 import { UserPlus, Trash2, ArrowRight, ShieldCheck, Loader2 } from 'lucide-react';
@@ -48,7 +48,7 @@ export default function BookingPage() {
 
   useEffect(() => {
     if (!selectedTrain || !selectedClass || !searchParams.date) return;
-    axios.get('/api/bookings/coaches', { params: { trainId: selectedTrain.trainId, date: searchParams.date, seatClass: selectedClass } })
+    api.get('/api/bookings/coaches', { params: { trainId: selectedTrain.trainId, date: searchParams.date, seatClass: selectedClass } })
       .then(({ data }) => { setCoaches(data.coaches || []); setHoldMinutes(data.holdMinutes || 8); setActiveCoach(data.coaches?.[0]?.coach || ''); })
       .catch(err => setError(err.response?.data?.message || 'Could not load sample coach inventory.'));
   }, [selectedTrain, selectedClass, searchParams.date]);
@@ -57,7 +57,7 @@ export default function BookingPage() {
     if (!activeCoach || !selectedTrain) return;
     setLoadingSeats(true);
     setSelectedSeats([]);
-    axios.get(`/api/bookings/coaches/${encodeURIComponent(activeCoach)}/seats`, { params: { trainId: selectedTrain.trainId, date: searchParams.date, seatClass: selectedClass } })
+    api.get(`/api/bookings/coaches/${encodeURIComponent(activeCoach)}/seats`, { params: { trainId: selectedTrain.trainId, date: searchParams.date, seatClass: selectedClass } })
       .then(({ data }) => setCoachSeats(data.seats || []))
       .catch(err => setError(err.response?.data?.message || 'Could not load coach layout.'))
       .finally(() => setLoadingSeats(false));
@@ -156,14 +156,14 @@ export default function BookingPage() {
     let holdId = null;
 
     try {
-      const held = await axios.post('/api/bookings/hold', {
+      const held = await api.post('/api/bookings/hold', {
         trainId: selectedTrain.trainId, date: searchParams.date, seatClass: selectedClass,
         coach: activeCoach, seatNumbers: selectedSeats
       });
       holdId = held.data.holdId;
       setHoldExpiresAt(held.data.expiresAt);
       // 1. Create pending reservation for the exact seats selected by the user
-      const orderRes = await axios.post('/api/bookings/create', {
+      const orderRes = await api.post('/api/bookings/create', {
         trainId: selectedTrain.trainId,
         date: searchParams.date,
         seatClass: selectedClass,
@@ -181,7 +181,7 @@ export default function BookingPage() {
       const paymentResult = await initializeRazorpay(orderData);
 
       if (!paymentResult.success) {
-        await axios.post(`/api/bookings/hold/${holdId}/release`);
+        await api.post(`/api/bookings/hold/${holdId}/release`);
         holdId = null;
         setHoldExpiresAt(null);
         setSubmitting(false);
@@ -189,7 +189,7 @@ export default function BookingPage() {
       }
 
       // 3. Verify Payment & Allocate Seats
-      const verifyRes = await axios.post('/api/bookings/verify', {
+      const verifyRes = await api.post('/api/bookings/verify', {
         bookingId: orderData.id,
         paymentId: paymentResult.paymentId,
         orderId: paymentResult.orderId,
@@ -209,7 +209,7 @@ export default function BookingPage() {
 
     } catch (err) {
       if (holdId) {
-        try { await axios.post(`/api/bookings/hold/${holdId}/release`); } catch { /* the hold may already have expired or been committed */ }
+        try { await api.post(`/api/bookings/hold/${holdId}/release`); } catch { /* the hold may already have expired or been committed */ }
       }
       setHoldExpiresAt(null);
       setError(err.response?.data?.message || 'Checkout failed. Please try again.');

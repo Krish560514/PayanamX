@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import { LayoutDashboard, Users, Ticket, IndianRupee, Loader2, AlertCircle } from 'lucide-react';
 
@@ -85,7 +85,7 @@ export default function AdminPage() {
     const fetchStats = async () => {
       try {
         const [res, trainRes, stationRes] = await Promise.all([
-          axios.get('/api/admin/stats'), axios.get('/api/admin/trains'), axios.get('/api/admin/stations')
+          api.get('/api/admin/stats'), api.get('/api/admin/trains'), api.get('/api/admin/stations')
         ]);
         setStats({ ...res.data.metrics, classSplit: res.data.classSplit, trends: res.data.trends, monthlyTrends: res.data.monthlyTrends });
         setTrains(trainRes.data.trains || []);
@@ -109,7 +109,7 @@ export default function AdminPage() {
     if (!token || user?.role !== 'admin') return undefined;
     let active = true;
     const params = { page: bookingPage, limit: 20, q: bookingQueryServer, status: bookingStatus, seatClass: bookingClass, from: bookingFrom, to: bookingTo, sort: bookingSort, direction: bookingDirection };
-    axios.get('/api/admin/bookings', { params })
+    api.get('/api/admin/bookings', { params })
       .then(bookingRes => {
         if (!active) return;
         setAdminBookings(bookingRes.data.bookings || []);
@@ -122,7 +122,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (!token || user?.role !== 'admin') return undefined;
     let active = true;
-    axios.get('/api/admin/users', { params: { page: userPage, limit: 20, q: userQueryServer } })
+    api.get('/api/admin/users', { params: { page: userPage, limit: 20, q: userQueryServer } })
       .then(({ data }) => { if (active) { setAdminUsers(data.users || []); setUserPagination(data.pagination || { page: 1, pages: 1, total: data.users?.length || 0 }); } })
       .catch(err => { if (active) setError(err.response?.data?.message || 'Failed to load registered users.'); });
     return () => { active = false; };
@@ -131,7 +131,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (!token || user?.role !== 'admin') return undefined;
     let active = true;
-    axios.get('/api/admin/audit', { params: { page: auditPage, limit: 25, action: auditAction, resource: auditResource } })
+    api.get('/api/admin/audit', { params: { page: auditPage, limit: 25, action: auditAction, resource: auditResource } })
       .then(({ data }) => { if (active) { setAuditEntries(data.entries || []); setAuditPagination(data.pagination || { page: 1, pages: 1, total: data.entries?.length || 0 }); } })
       .catch(err => { if (active) setError(err.response?.data?.message || 'Failed to load admin audit history.'); });
     return () => { active = false; };
@@ -140,7 +140,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (!token || user?.role !== 'admin') return undefined;
     let active = true;
-    axios.get('/api/admin/stats', { params: { from: analyticsFrom, to: analyticsTo } })
+    api.get('/api/admin/stats', { params: { from: analyticsFrom, to: analyticsTo } })
       .then(({ data }) => { if (active) setStats({ ...data.metrics, classSplit: data.classSplit, trends: data.trends, monthlyTrends: data.monthlyTrends }); })
       .catch(err => { if (active) setError(err.response?.data?.message || 'Could not load analytics for this date range.'); });
     return () => { active = false; };
@@ -155,8 +155,8 @@ export default function AdminPage() {
       const coaches = JSON.parse(trainForm.coachComposition);
       const baseFare = JSON.parse(trainForm.baseFare);
       const stops = codes.map((stationCode, stopIndex) => ({ stationCode, stopIndex, arrivalTime: stopIndex === 0 ? '00:00' : `${String((stopIndex * 4) % 24).padStart(2, '0')}:00`, departureTime: stopIndex === codes.length - 1 ? '00:00' : `${String((stopIndex * 4) % 24).padStart(2, '0')}:10`, distanceKm: stopIndex * 300, dayNumber: 1 }));
-      await axios.post('/api/admin/trains', { trainNumber: trainForm.trainNumber, name: trainForm.name, sourceCode: trainForm.sourceCode.toUpperCase(), destinationCode: trainForm.destinationCode.toUpperCase(), classes: trainForm.classes.split(',').map(x => x.trim().toUpperCase()), runsOn: trainForm.runsOn.split(',').map(x => x.trim()), baseFare, coachComposition: coaches, stops });
-      const updated = await axios.get('/api/admin/trains'); setTrains(updated.data.trains || []);
+      await api.post('/api/admin/trains', { trainNumber: trainForm.trainNumber, name: trainForm.name, sourceCode: trainForm.sourceCode.toUpperCase(), destinationCode: trainForm.destinationCode.toUpperCase(), classes: trainForm.classes.split(',').map(x => x.trim().toUpperCase()), runsOn: trainForm.runsOn.split(',').map(x => x.trim()), baseFare, coachComposition: coaches, stops });
+      const updated = await api.get('/api/admin/trains'); setTrains(updated.data.trains || []);
       setTrainForm({ trainNumber: '', name: '', sourceCode: '', destinationCode: '', stopCodes: '', classes: 'SL,3A', runsOn: 'Mon,Tue,Wed,Thu,Fri,Sat,Sun', coachComposition: '[]', baseFare: '{}' });
     } catch (err) { setError(err.response?.data?.message || err.message || 'Could not add train.'); }
     finally { setSavingTrain(false); }
@@ -164,7 +164,7 @@ export default function AdminPage() {
 
   const handleAddStation = async (event) => {
     event.preventDefault(); setError('');
-    try { await axios.post('/api/admin/stations', stationForm); const response = await axios.get('/api/admin/stations'); setStations(response.data.stations || []); setStationForm({ code: '', name: '', state: '', zone: '' }); }
+    try { await api.post('/api/admin/stations', stationForm); const response = await api.get('/api/admin/stations'); setStations(response.data.stations || []); setStationForm({ code: '', name: '', state: '', zone: '' }); }
     catch (err) { setError(err.response?.data?.message || 'Could not add station.'); }
   };
 
@@ -175,13 +175,13 @@ export default function AdminPage() {
 
   const saveStation = async (event) => {
     event.preventDefault();
-    try { await axios.put(`/api/admin/stations/${editingStation._id}`, editingStationForm); const response = await axios.get('/api/admin/stations'); setStations(response.data.stations || []); setEditingStation(null); setEditingStationForm(null); }
+    try { await api.put(`/api/admin/stations/${editingStation._id}`, editingStationForm); const response = await api.get('/api/admin/stations'); setStations(response.data.stations || []); setEditingStation(null); setEditingStationForm(null); }
     catch (err) { setError(err.response?.data?.message || 'Could not update station.'); }
   };
 
   const removeStation = async (station) => {
     if (!window.confirm(`Delete station ${station.code}? Stations used by trains or routes are protected.`)) return;
-    try { await axios.delete(`/api/admin/stations/${station._id}`); setStations(current => current.filter(item => item._id !== station._id)); }
+    try { await api.delete(`/api/admin/stations/${station._id}`); setStations(current => current.filter(item => item._id !== station._id)); }
     catch (err) { setError(err.response?.data?.message || 'Could not delete station.'); }
   };
 
@@ -201,20 +201,20 @@ export default function AdminPage() {
         stops: JSON.parse(editingTrainForm.stops),
         baseFare: JSON.parse(editingTrainForm.baseFare)
       };
-      await axios.put(`/api/admin/trains/${editingTrain._id}`, body);
-      const result = await axios.get('/api/admin/trains'); setTrains(result.data.trains || []);
+      await api.put(`/api/admin/trains/${editingTrain._id}`, body);
+      const result = await api.get('/api/admin/trains'); setTrains(result.data.trains || []);
       setEditingTrain(null); setEditingTrainForm(null);
     } catch (err) { setError(err.response?.data?.message || err.message || 'Could not save train configuration.'); }
   };
 
   const toggleTrain = async (train) => {
-    try { await axios.put(`/api/admin/trains/${train._id}`, { active: !train.active }); const result = await axios.get('/api/admin/trains'); setTrains(result.data.trains || []); }
+    try { await api.put(`/api/admin/trains/${train._id}`, { active: !train.active }); const result = await api.get('/api/admin/trains'); setTrains(result.data.trains || []); }
     catch (err) { setError(err.response?.data?.message || 'Could not update train status.'); }
   };
 
   const removeTrain = async (train) => {
     if (!window.confirm(`Remove ${train.trainNumber} from sample search? Trains with active bookings cannot be deleted.`)) return;
-    try { await axios.delete(`/api/admin/trains/${train._id}`); setTrains(current => current.filter(item => item._id !== train._id)); }
+    try { await api.delete(`/api/admin/trains/${train._id}`); setTrains(current => current.filter(item => item._id !== train._id)); }
     catch (err) { setError(err.response?.data?.message || 'Could not remove train.'); }
   };
 

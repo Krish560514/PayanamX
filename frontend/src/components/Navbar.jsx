@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Train, LayoutDashboard, MapPin, Search, User, LogOut, Shield, Menu, X, Bell } from 'lucide-react';
@@ -14,21 +14,21 @@ export default function Navbar() {
 
   const loadNotifications = async () => {
     if (!user) return;
-    try { const response = await axios.get('/api/auth/notifications'); setNotifications(response.data.notifications || []); }
+    try { const response = await api.get('/api/auth/notifications'); setNotifications(response.data.notifications || []); }
     catch { setNotifications([]); }
   };
   useEffect(() => { loadNotifications(); }, [user?.id, user?._id]);
 
   const markRead = async (notification) => {
     if (notification.read) return;
-    try { await axios.put(`/api/auth/notifications/${notification._id}/read`); setNotifications(current => current.map(item => item._id === notification._id ? { ...item, read: true } : item)); }
+    try { await api.put(`/api/auth/notifications/${notification._id}/read`); setNotifications(current => current.map(item => item._id === notification._id ? { ...item, read: true } : item)); }
     catch { /* keep the notice unread so the user can retry */ }
   };
 
   const markAllRead = async () => {
     const unread = notifications.filter(item => !item.read);
     try {
-      await Promise.all(unread.map(item => axios.put(`/api/auth/notifications/${item._id}/read`)));
+      await Promise.all(unread.map(item => api.put(`/api/auth/notifications/${item._id}/read`)));
       setNotifications(current => current.map(item => ({ ...item, read: true })));
     } catch { /* retain unread indicators if one update fails */ }
   };
